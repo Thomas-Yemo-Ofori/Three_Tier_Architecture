@@ -5,7 +5,13 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  workflow_dispatch: # Allows manually triggering the workflow
+  workflow_dispatch: 
+    inputs:
+      destroy:
+        description: 'Set to true to destroy resources'
+        required: false
+        default: 'false'
+
 
 jobs:
   aws_provision:
