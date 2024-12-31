@@ -8,24 +8,18 @@ on:
   workflow_dispatch: 
     inputs:
       destroy:
-        description: 'Set to true to destroy resources'
+        description: "Set to true to destroy resources"
         required: false
-        default: 'false'
-
+        default: "false"
 
 jobs:
   aws_provision:
+    if: github.event.inputs.destroy != 'true' # Skip if destroy is triggered
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    # - name: Install AWS CLI
-    #   run: |
-    #     sudo apt update -y
-    #     sudo apt upgrade -y
-    #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    #     unzip awscliv2.zip
-    #     sudo ./aws/install
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
     - name: Configure AWS CLI
       uses: aws-actions/configure-aws-credentials@v4
@@ -41,27 +35,21 @@ jobs:
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
         sudo apt update && sudo apt install terraform
 
-    - name: Initialize the Repository
+    - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan & Apply
       run: |
-        terraform plan
-        terraform apply -auto-approve
+        terraform plan -out=tfplan
+        terraform apply -auto-approve tfplan
 
   aws_destroy:
+    if: github.event.inputs.destroy == 'true' # Conditional execution for destroy
     runs-on: ubuntu-latest
-    if: github.event.inputs.destroy == 'true' # Conditional execution based on input
 
     steps:
-    - uses: actions/checkout@v4
-    # - name: Install AWS CLI
-    #   run: |
-    #     sudo apt update -y
-    #     sudo apt upgrade -y
-    #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    #     unzip awscliv2.zip
-    #     sudo ./aws/install
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
     - name: Configure AWS CLI
       uses: aws-actions/configure-aws-credentials@v4
@@ -77,7 +65,7 @@ jobs:
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
         sudo apt update && sudo apt install terraform
 
-    - name: Initialize the Repository
+    - name: Terraform Init
       run: terraform init
 
     - name: Terraform Destroy
