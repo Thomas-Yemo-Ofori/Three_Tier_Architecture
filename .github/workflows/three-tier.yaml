@@ -1,0 +1,78 @@
+name: Three-Tier-Architecture Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch: # Allows manually triggering the workflow
+
+jobs:
+  aws_provision:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install AWS CLI
+      run: |
+        sudo apt update -y
+        sudo apt upgrade -y
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.REGION }}
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+      
+    - name: Install Terraform
+      run: |
+        wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update && sudo apt install terraform
+
+    - name: Initialize the Repository
+      run: terraform init
+
+    - name: Terraform Plan & Apply
+      run: |
+        terraform plan
+        terraform apply -auto-approve
+
+  aws_destroy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.destroy == 'true' # Conditional execution based on input
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install AWS CLI
+      run: |
+        sudo apt update -y
+        sudo apt upgrade -y
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.REGION }}
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+
+    - name: Install Terraform
+      run: |
+        wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update && sudo apt install terraform
+
+    - name: Initialize the Repository
+      run: terraform init
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
