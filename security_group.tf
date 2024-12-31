@@ -8,11 +8,11 @@ resource "aws_security_group" "web_asg_sg" {
   description = "Security Group for ${var.project_name}"
 
   ingress {
-    from_port       = var.ssh_port
-    to_port         = var.ssh_port
-    protocol        = "tcp"
+    from_port   = var.ssh_port
+    to_port     = var.ssh_port
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description     = "SSH"
+    description = "SSH"
   }
 
   ingress {
@@ -24,25 +24,25 @@ resource "aws_security_group" "web_asg_sg" {
   }
 
   ingress {
-    from_port       = var.https_port
-    to_port         = var.https_port
-    protocol        = "tcp"
+    from_port   = var.https_port
+    to_port     = var.https_port
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description     = "HTTPS"
+    description = "HTTPS"
   }
 
   ingress {
-    from_port       = var.sonar_port
-    to_port         = var.sonar_port
-    protocol        = "tcp"
+    from_port   = var.sonar_port
+    to_port     = var.sonar_port
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description     = "Sonarqube"
+    description = "Sonarqube"
   }
 
   egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -137,7 +137,14 @@ resource "aws_security_group" "web_alb_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  egress {
+
+  ingress {
+    from_port   = var.https_port
+    to_port     = var.https_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+    egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -188,7 +195,7 @@ resource "aws_security_group" "db_tier_sg" {
   name        = "${var.project_name}_db_tier_sg"
   description = "Security group for database"
   vpc_id      = aws_ssm_parameter.vpc_id.value
-  depends_on = [ aws_vpc.three_tier ]
+  depends_on  = [aws_vpc.three_tier]
 
   ingress {
     from_port       = var.db_port

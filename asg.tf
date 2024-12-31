@@ -3,11 +3,11 @@
 ######################################################################
 
 resource "aws_launch_template" "web_asg_lt" {
-  name                   = "web_asg_lt"
-  image_id               = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type[1]
-  key_name               = aws_key_pair.web_server_key.key_name
-  user_data              = filebase64("${path.module}/user_data.sh")
+  name          = "web_asg_lt"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type[1]
+  key_name      = aws_key_pair.web_server_key.key_name
+  user_data     = filebase64("${path.module}/user_data.sh")
 
   network_interfaces {
     associate_public_ip_address = true
@@ -67,19 +67,19 @@ resource "aws_autoscaling_group" "web_tier_asg" {
 ######################################################################
 
 resource "aws_launch_template" "app_asg_lt" {
-  name                   = "app_asg_lt"
-  image_id               = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type[1]
-  key_name               = aws_key_pair.app_server_key.key_name
-  user_data              = filebase64("${path.module}/user_data.sh")
+  name          = "app_asg_lt"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type[1]
+  key_name      = aws_key_pair.app_server_key.key_name
+  user_data     = filebase64("${path.module}/user_data.sh")
 
   network_interfaces {
-    associate_public_ip_address = false 
+    associate_public_ip_address = false
     security_groups             = [aws_security_group.app_asg_sg.id]
   }
 
   tags = {
-    Name = "${var.project_name}_app_asg_lt"
+    Name         = "${var.project_name}_app_asg_lt"
     Environments = "${var.envs[0]}"
   }
 }

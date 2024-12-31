@@ -127,7 +127,7 @@ variable "alb_listener" {
 variable "instance_type" {
   description = "HTTPS port for instances"
   type        = list(string)
-  default = ["t2.micro","t2.medium", "t2.large"]
+  default     = ["t2.micro", "t2.medium", "t2.large"]
 }
 
 variable "sonar_port" {
@@ -144,42 +144,42 @@ variable "bastion_host_instance_type" {
 
 variable "db_port" {
   description = "This is the db port"
-  type = number
-  default = 3306
+  type        = number
+  default     = 3306
 }
 
 variable "db_storage_size" {
   description = "This is the db storage size"
-  type = number
-  default = 20
+  type        = number
+  default     = 20
 }
 
 variable "db_engine" {
   description = "This is the db engine"
-  type =string
-  default ="mysql"
+  type        = string
+  default     = "mysql"
 }
 
 variable "db_engine_version" {
   description = "This is the db engine version"
-  type =string
-  default ="8.0"
+  type        = string
+  default     = "8.0"
 }
 
 variable "db_instance_class" {
   description = "This is the db instance class"
-  type =string
-  default ="db.t3.micro"
+  type        = string
+  default     = "db.t3.micro"
 }
 
 variable "db_username" {
   description = "This is the db username"
-  type =string
-  default ="three_tier"
+  type        = string
+  default     = "three_tier"
 }
 
 variable "db_parameter_name" {
   description = "This is the db parameter name"
-  type =string
-  default ="default.mysql8.0"
+  type        = string
+  default     = "default.mysql8.0"
 }
