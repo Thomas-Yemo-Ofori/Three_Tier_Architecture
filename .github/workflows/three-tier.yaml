@@ -28,6 +28,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.REGION }}
         role-to-assume: ${{ secrets.IAM_ROLE }}
+        role-session-name: GitHubActionsSession
       
     - name: Install Terraform
       run: |
@@ -58,6 +59,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.REGION }}
         role-to-assume: ${{ secrets.IAM_ROLE }}
+        role-session-name: GitHubActionsSession
 
     - name: Install Terraform
       run: |
