@@ -14,7 +14,7 @@ on:
 
 jobs:
   aws_provision:
-    if: github.event.inputs.destroy != 'true' # Skip if destroy is triggered
+    if: github.event.inputs.destroy != 'true' 
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +45,7 @@ jobs:
         terraform apply -auto-approve tfplan
 
   aws_destroy:
-    if: github.event.inputs.destroy == 'true' # Conditional execution for destroy
+    if: github.event.inputs.destroy == 'true' 
     runs-on: ubuntu-latest
 
     steps:
