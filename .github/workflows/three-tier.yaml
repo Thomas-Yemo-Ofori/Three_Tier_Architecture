@@ -11,18 +11,13 @@ on:
         description: "Set to true to destroy resources (for aws_provision)"
         required: false
         default: "false"
-      run_destroy_job:
-        description: "Run destroy job manually (only for aws_destroy)"
-        required: false
-        default: "false"
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  aws_provision:
-    if: github.event.inputs.destroy != 'true'
+  aws_provision_and_destroy:
     runs-on: ubuntu-latest
 
     steps:
@@ -54,43 +49,14 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
-    - name: Terraform Plan & Apply
-      run: |
-        terraform plan
-        terraform apply -auto-approve
+    - name: Terraform Plan
+      run: terraform plan
 
-  aws_destroy:
-    if: github.event.inputs.run_destroy_job == 'true'
-    runs-on: ubuntu-latest
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      continue-on-error: true  # Allow failure to continue the next steps
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-region: ${{ secrets.REGION }}
-        role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-        role-session-name: GitHubActionsSession
-
-    - name: Verify AWS credentials
-      run: aws sts get-caller-identity
-
-    - name: Install Terraform
-      run: |
-        wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-        sudo apt update && sudo apt install terraform
-
-    - name: Terraform Format
-      run: terraform fmt
-    
-    - name: Terraform Init
-      run: terraform init
-
-    - name: Terraform Validate
-      run: terraform validate
-
-    - name: Terraform Destroy
+    # Automatically destroy the resources if the Terraform Apply fails
+    - name: Terraform Destroy (if Apply fails)
+      if: failure()  # This will only run if the previous step fails
       run: terraform destroy -auto-approve
