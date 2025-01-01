@@ -1,4 +1,4 @@
-name: Three-Tier-Architecture Pipeline
+name: Three_Tier_Architecture Pipeline
 
 on:
   push:
