@@ -51,10 +51,10 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve
-    #   continue-on-error: true 
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      continue-on-error: true 
 
     - name: Terraform Destroy (if Apply fails)
-      # if: failure()
+      if: failure()
       run: terraform destroy -auto-approve
