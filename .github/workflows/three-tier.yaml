@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       destroy:
-        description: "Set to true to destroy resources (for aws_provision)"
+        description: "Set to true to destroy resources"
         required: false
         default: "false"
 
@@ -52,9 +52,8 @@ jobs:
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
-      continue-on-error: true  # Allow failure to continue the next steps
+      continue-on-error: true 
 
-    # Automatically destroy the resources if the Terraform Apply fails
     - name: Terraform Destroy (if Apply fails)
-      if: failure()  # This will only run if the previous step fails
+      if: failure()
       run: terraform destroy -auto-approve
