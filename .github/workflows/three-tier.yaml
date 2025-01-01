@@ -11,6 +11,10 @@ on:
         description: "Set to true to destroy resources (for aws_provision)"
         required: false
         default: "false"
+      run_destroy_job:
+        description: "Run destroy job manually (only for aws_destroy)"
+        required: false
+        default: "false"
 
 permissions:
   id-token: write
@@ -56,7 +60,7 @@ jobs:
         terraform apply -auto-approve
 
   aws_destroy:
-    if: github.event.inputs.destroy !== 'true'
+    if: github.event.inputs.run_destroy_job == 'true'
     runs-on: ubuntu-latest
 
     steps:
