@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   aws_provision_and_destroy:
-    if: github.event.inputs.destroy != 'true'
+    if: github.event.inputs.destroy == 'true'
     runs-on: ubuntu-latest
 
     steps:
