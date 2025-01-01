@@ -25,12 +25,15 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Configure AWS CLI
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{ secrets.REGION }}
         role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
         role-session-name: GitHubActionsSession
+
+    - name: Verify AWS credentials
+      run: aws sts get-caller-identity
       
     - name: Install Terraform
       run: |
@@ -54,12 +57,15 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Configure AWS CLI
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{ secrets.REGION }}
         role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
         role-session-name: GitHubActionsSession
+
+    - name: Verify AWS credentials
+      run: aws sts get-caller-identity
 
     - name: Install Terraform
       run: |
