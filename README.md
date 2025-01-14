@@ -1,4 +1,11 @@
-Three Tier Architecture using the Terraform
+Three Tier Architecture with Terraform
+
+This projects looks at deploying a three tier application - web tier, app tier and db tier - on AWS Cloud.
+Before we begin, there are a few prerequisite that needs to facilitate a successful implementation.
+
+Prerequisites:
+1. Installation of AWSCLI
+2. Installation of Terraform
 
 # Network Infrastructure
 
@@ -30,7 +37,7 @@ Three Tier Architecture using the Terraform
 
 # Server Provisioning
 
-1. Create a launch template for the web servers and paste the following shell script in the user data 
+1. Create a launch template for the web servers and paste the following shell script (bootstraping) in the user data 
 - user_data: {
 #!/bin/bash
 
@@ -74,3 +81,6 @@ sudo echo "<h1>Welcome to DevOps Engineering!</h1>" > /var/www/html/index.html
     - MYSQL: 3306
 
 13. Create a RDS MySQL database instance (free-tier)
+
+
+# Happy Learning!
